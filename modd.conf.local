@@ -1,0 +1,15 @@
+**/*.go {
+    prep: go test @dirmods
+}
+
+# Exclude all test files of the form *_test.go
+**/*.go !**.*_test.go {
+    # 'go build -o lenslocked.exe .' creates a bin in the project dir
+    prep: "
+        go build -o lenslocked.exe .
+        echo building the package module:
+        echo src is $pwd
+        echo restarting the rebuilt package from the project folder...
+    "
+    daemon +sigterm: ./lenslocked.exe -m .\tmp
+}
